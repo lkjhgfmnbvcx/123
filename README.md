@@ -129,36 +129,39 @@
 <h4>4.創建tf.data.Dataset</h4>
 <p>最後，此 <code>make_dataset</code> 方法將獲取時間序列 DataFrame 並使用 <a href="https://tensorflow.google.cn/api_docs/python/tf/keras/utils/timeseries_dataset_from_array?hl=zh-cn"><code>tf.keras.utils.timeseries_dataset_from_array</code></a> 函數將其轉換為 <code>(input_window, label_window)</code> 對的 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a>。</p>
 <img src="https://github.com/lkjhgfmnbvcx/123/blob/main/31.png">
-<p><code>WindowGenerator</code> 對象包含訓練、驗證和測試數據。<p>
-<p>使用您之前定義的 <code>make_dataset</code> 方法新增屬性以作為 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>tf.data.Dataset</code></a> 存取它們。此外，新增一個標準樣本批次以便於存取和繪圖：<p>
+<p><code>WindowGenerator</code> 對象包含訓練、驗證和測試數據。</p>
+<p>使用您之前定義的 <code>make_dataset</code> 方法新增屬性以作為 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>tf.data.Dataset</code></a> 存取它們。此外，新增一個標準樣本批次以便於存取和繪圖：</p>
 <img src="https://github.com/lkjhgfmnbvcx/123/blob/main/32.png">
-
-
-
-  
+<p>現在，<code>WindowGenerator</code> 物件允許您存取<a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>tf.data.Dataset</code></a> 對象，因此您可以輕鬆迭代資料。</p>
+<p><a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>Dataset.element_spec</code></a>屬性會告訴您資料集元素的結構、資料類型和形狀。</p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/33.png"></p>
+<p>在 <code>Dataset</code> 上進行迭代會產生具體批次：<p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/34.png"></p>
 <h2>單步模型</h2>
 <p>基於此類數據能夠構建的最簡單模型，能夠僅根據當前條件預測單個特徵的值，即未來的一個時間步驟（1 小時）。</p>
 <p>因此，從構建模型開始，預測未來 1 小時的 <code>T (degC)</code> 值。</p>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/narrow_window.png?hl=zh-tw" alt="預測下一個時間步驟"></p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%234.png" alt="預測下一個時間步驟"></p>
 <p>配置 <code>WindowGenerator</code> 對象以生成下列單步 <code>(input, label)</code> 對：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%96%AE%E6%AD%A5%E6%A8%A1%E5%9E%8B1.png">
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/35.png"></p>
+<p><code>window</code> 會根據訓練、驗證和測試集建立 <code>tf.data.Datasets</code>，讓您可以輕鬆迭代資料批次。<p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/36.png"></p>
 <h3>基線</h3>
 <p>在構建可訓練模型之前，最好將性能基線作為與以後更複雜的模型進行比較的點。</p>
 <p>第一個任務是在給定所有特徵的當前值的情況下，預測未來 1 小時的溫度。當前值包括當前溫度。</p>
 <p>因此，從僅返回當前溫度作為預測值的模型開始，預測「無變化」。這是一個合理的基線，因為溫度變化緩慢。當然，如果您對更遠的未來進行預測，此基線的效果就不那麼好了。</p>
 <p>將輸入發送到輸出</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%9F%BA%E7%B7%9A1.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/37.png">
 <p>實例化並評估此模型:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%9F%BA%E7%B7%9A2.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/38.png">
 <p>上面的程式碼打印了一些性能指標，但這些指標並沒有使您對模型的運行情況有所了解。</p>
 <p><code>WindowGenerator</code> 有一種繪製方法，但只有一個樣本，繪圖不是很有趣。</p>
 <p>因此，創建一個更寬的 <code>WindowGenerator</code> 來一次生成包含 24 小時連續輸入和標籤的窗口。新的 <code>wide_window</code> 變量不會更改模型的運算方式。模型仍會根據單個輸入時間步驟對未來 1 小時進行預測。這裡 <code>time</code> 軸的作用類似於 <code>batch</code> 軸：每個預測都是獨立進行的，時間步驟之間沒有交互：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%9F%BA%E7%B7%9A3.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/39.png">
 <p>此擴展窗口可以直接傳遞到相同的 <code>baseline</code> 模型，而無需修改任何程式碼。能做到這一點是因為輸入和標籤具有相同數量的時間步驟，並且基線只是將輸入轉發至輸出：</p>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/last_window.png?hl=zh-tw" alt="對未來 1 小時進行一次預測，每小時一次。"></p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%9F%BA%E7%B7%9A4.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%235.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/40.png">
 <p>通過繪製基線模型的預測值，可以注意到只是標籤向右移動了一小時:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%9F%BA%E7%B7%9A5.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/41.png">
 <p>在上面三個樣本的繪圖中，單步模型運行了 24 個小時。這需要一些解釋：</p>
 <ul>
 <li>藍色的 <code>Inputs</code> 行顯示每個時間步驟的輸入溫度。模型會接收所有特徵，而該繪圖僅顯示溫度。</li>
@@ -167,21 +170,44 @@
 </ul>
 <h3>線性模型</h3>
 <p>可以應用於此任務的最簡單的<strong>可訓練</strong>模型是在輸入和輸出之間插入線性轉換。在這種情況下，時間步驟的輸出僅取決於該步驟：</p>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/narrow_window.png?hl=zh-tw" alt="單步預測"></p>
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%236.png">
+
 <p>沒有設置 <code>activation</code> 的 <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense?hl=zh-tw"><code>tf.keras.layers.Dense</code></a> 層是線性模型。層僅會將數據的最後一個軸從 <code>(batch, time, inputs)</code> 轉換為 <code>(batch, time, units)</code>；它會單獨應用於 <code>batch</code> 和 <code>time</code> 軸的每個條目。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B1.png">
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B2.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/42.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/43.png">
 <p>本教程訓練許多模型，因此將訓練過程打包到一個函數中:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B3.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/44.png">
 <p>訓練模型並評估其性能:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B4.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/45.png">
 <p>與 <code>baseline</code> 模型類似，可以在寬度窗口的批次上調用線性模型。使用這種方式，模型會在連續的時間步驟上進行一系列獨立預測。<code>time</code> 軸的作用類似於另一個 <code>batch</code> 軸。在每個時間步驟上，預測之間沒有交互。</p>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/wide_window.png?hl=zh-tw" alt="單步預測"></p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B5.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%237.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/46.png">
 <p>下面是 <code>wide_window</code> 上它的樣本預測繪圖。請注意，在許多情況下，預測值顯然比僅返回輸入溫度更好，但在某些情況下則會更差：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B6.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/47.png">
 <p>線性模型的優點之一是它們相對易於解釋。您可以拉取層的權重，並呈現分配給每個輸入的權重:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B7%9A%E6%80%A7%E6%A8%A1%E5%9E%8B7.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/48.png">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <p>有的模型甚至不會將大多數權重放在輸入<code>T(degC)</code>上。這是隨機初始化的風險之一。</p>
 <h3>密集</h3>
 <p>在應用實際運算多個時間步驟的模型之前，值得研究一下更深、更強大的單輸入步驟模型的性能。</p>
