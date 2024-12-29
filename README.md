@@ -11,7 +11,7 @@
 自迴歸：一次做出一個預測，並將輸出饋送回模型。
 
 安装
-![image](https://github.com/ALICE8520/colab/blob/main/p0.1.jpg)
+![image](https://github.com/lkjhgfmnbvcx/123/blob/main/1.png)
 天氣資料集
 本教學使用馬克斯普朗克生物地球化學研究所記錄的[天氣時間序列資料集。
 
