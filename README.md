@@ -131,12 +131,41 @@
 根據任務和模型類型，您可能需要生成各種數據窗口。下面是一些示例：
 <ol>
 <li>例如，要在給定 24 小時歷史記錄的情況下對未來 24 小時作出一次預測，可以定義如下窗口：</li>
-<img src="">
-<img src="">
-<img src="">
-<img src="">
-<img src="">
-<img src="">
+  
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%231.png">
+
+<li>給定 6 小時的歷史記錄，對未來 1 小時作出一次預測的模型將需要類似下面的窗口：</li>
+
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%232.png">
+
+本部分的剩餘內容會定義 <code>WindowGenerator</code> 類。此類可以：
+
+<li>處理如上圖所示的索引和偏移量。</li>
+<li>將特徵窗口拆分為 <code>(features, labels)</code> 對。</li>
+<li>繪製結果窗口的內容。</li>
+<li>使用 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a> 從訓練、評估和測試數據高效生成這些窗口的批次。</li>
+</ol>
+<h3>1.索引和偏移量</h3>
+<p>首先創建 <code>WindowGenerator</code> 類。<code>__init__</code> 方法包含輸入和標籤索引的所有必要邏輯。</p>
+<p>它還將訓練、評估和測試 DataFrame 作為輸出。這些稍後將被轉換為窗口的 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a>。</p>
+
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/22.png">
+
+以下是建立本部分開頭圖表所示的兩個視窗的程式碼：
+
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/23.png">
+
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/24.png">
+
+<h3>2.拆分</h3>
+給定一個連續輸入的列表，split_window 方法會將它們轉換為輸入視窗和標籤視窗。
+
+您先前定義的範例 w2 將按以下方式拆分：
+
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%233.png">
+
+此圖不顯示資料的 features 軸，但此 split_window 函數也會處理 label_columns，因此可以將其用於單輸出和多輸出樣本。
+
 <img src="">
 <img src="">
 <img src="">
