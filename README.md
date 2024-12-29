@@ -129,8 +129,8 @@
 <h4>4.創建tf.data.Dataset</h4>
 <p>最後，此 <code>make_dataset</code> 方法將獲取時間序列 DataFrame 並使用 <a href="https://tensorflow.google.cn/api_docs/python/tf/keras/utils/timeseries_dataset_from_array?hl=zh-cn"><code>tf.keras.utils.timeseries_dataset_from_array</code></a> 函數將其轉換為 <code>(input_window, label_window)</code> 對的 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a>。</p>
 <img src="https://github.com/lkjhgfmnbvcx/123/blob/main/31.png">
-<p><code>WindowGenerator</code> 對象包含訓練、驗證和測試數據。
-<p>使用您之前定義的 <code>make_dataset<code> 方法新增屬性以作為 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>tf.data.Dataset</code></a> 存取它們。此外，新增一個標準樣本批次以便於存取和繪圖：
+<p><code>WindowGenerator</code> 對象包含訓練、驗證和測試數據。<p>
+<p>使用您之前定義的 <code>make_dataset<code> 方法新增屬性以作為 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset"><code>tf.data.Dataset</code></a> 存取它們。此外，新增一個標準樣本批次以便於存取和繪圖：<p>
 <img src="https://github.com/lkjhgfmnbvcx/123/blob/main/32.png">
 
 
