@@ -1,5 +1,5 @@
 <h1>時間序列預測</h1>
-南華大學 人工智慧期末報告 11225019 黃泊諍 11225027 陳姵均
+南華大學 人工智慧期末報告 11124120 王韻婷 11124119 丁湘玲
 <hr/>
 <p>本教程是使用 TensorFlow 進行時間序列預測的簡介。它構建了幾種不同樣式的模型，包括卷積神經網絡 (CNN) 和循環神經網絡 (RNN)。</p>
 <p>本教程包括兩個主要部分，每個部分包含若干小節：</p>
@@ -16,57 +16,63 @@
 </ul></li>
 </ul>
 <h2>安裝</h2>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2%202024-12-18%20221002.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/1.png">
 <h2>天氣數據集</h2>
 <p>本教程使用由馬克斯·普朗克生物地球化學研究所記錄的天氣時間序列數據集</p>
 <p>此數據集包含了 14 個不同特徵，例如氣溫、氣壓和濕度。自 2003 年起，這些數據每 10 分鐘就會被收集一次。為了提高效率，您將僅使用 2009 至 2016 年之間收集的數據。數據集的這一部分由 François Chollet 為他的 Deep Learning with Python</a> 一書所準備。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%A4%A9%E6%B0%A3%E6%95%B8%E6%93%9A%E9%9B%861.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/2.png">
 <p>本教程僅處理每小時預測，因此先從 10 分鐘間隔到 1 小時對數據進行下採樣：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%A4%A9%E6%B0%A3%E6%95%B8%E6%93%9A%E9%9B%862.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/3.png">
 <p>讓我們看一下數據。是前面幾行:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%A4%A9%E6%B0%A3%E6%95%B8%E6%93%9A%E9%9B%863.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/4.png">
 <p>下面是一些特徵隨時間的演變</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%A4%A9%E6%B0%A3%E6%95%B8%E6%93%9A%E9%9B%864.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/5.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/6.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/7.png">
 <h3>檢查和清理</h3>
 <p>接下來，看一下數據集的統計數據:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%AA%A2%E6%9F%A5%E5%92%8C%E6%B8%85%E7%90%86.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/8.png">
 <h4>風速</h4>
 <p>值得注意的一件事是風速 (<code>wv (m/s)</code>) 的 <code>min</code> 值和最大值 (<code>max. wv (m/s)</code>) 列。這個 <code>-9999</code> 可能是錯誤的。</p>
 <p>有一個單獨的風向列，因此速度應大於零(>=0)。將其替換為零</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E9%A2%A8%E9%80%9F1.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/9.png">
 <h4>特徵工程</h4>
 <p>在潛心構建模型之前，務必了解數據並確保傳遞格式正確的數據</p>
 <h4>風</h4>
 <p>數據的最後一列 <code>wd (deg)</code> 以度為單位給出了風向。角度不是很好的模型輸入：360° 和 0° 應該會彼此接近，並平滑換行。如果不吹風，方向則無關緊要。</p>
 <p>現在，風數據的分佈狀態如下:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E9%A2%A8.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/10.png">
 <p>但是，如果將風向和風速列轉換成風向量，模組將更容易解釋:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E9%A2%A8%E5%90%91%E9%87%8F.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/11.png">
 <p>模型正確解釋風向量的分佈要簡單得多:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E9%A2%A82.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/12.png">
 <h4>時間</h4>
 <p>同樣，Date Time 列非常有用，但不是以這種字符串形式。首先將其轉換為秒:</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%99%82%E9%96%931.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/13.png">
 <p>與風向類似，以秒為單位的時間不是有用的模型輸入。作為天氣數據，它有清晰的每日和每年週期性。可以通過多種方式處理週期性。</p>
 <p>您可以通過使用正弦和餘弦變換為清晰的“一天中的時間”和“一年中的時間”信號來獲得可用的信號：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%99%82%E9%96%932.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/14.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/15.png">
 <p>這使模型能夠訪問最重要的頻率特徵。在這種情況下，您提前知道了哪些頻率很重要。</p>
 <p>如果您沒有該信息，則可以通過使用快速傅里葉變換提取特徵來確定哪些頻率重要。要檢驗假設，下面是溫度隨時間變化的。請注意 <code>1/year</code> 和 <code>1/day</code> 附近頻率的明顯峰值：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%99%82%E9%96%933.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/16.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/17.png">
+
 <h3>拆分數據</h3>
 <p>您將使用 <code>(70%, 20%, 10%)</code> 拆分出訓練集、驗證集和測試集。請注意，在拆分前數據沒有隨機打亂順序。這有兩個原因：</p>
 <ol>
 <li>確保仍然可以將數據切入連續樣本的窗口。</li>
 <li>確保訓練後在收集的數據上對模型進行評估，驗證/測試結果更加真實。</li>
 </ol>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%8B%86%E5%88%86%E6%95%B8%E6%93%9A.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/18.png">
 <h3>歸一化數據</h3>
 <p>在訓練神經網絡之前縮放特徵很重要。歸一化是進行此類縮放的常見方式：減去平均值，然後除以每個特徵的標準差。</p>
 <p>平均值和標準差應僅使用訓練數據進行計算，從而使模型無法訪問驗證集和測試集中的值。</p>
 <p>有待商榷的是：模型在訓練時不應訪問訓練集中的未來值，以及應該使用移動平均數來進行此類規範化。這不是本教程的重點，驗證集和測試集會確保我們獲得（某種程度上）可靠的指標。因此，為了簡單起見，本教程使用的是簡單平均數。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%AD%B8%E4%B8%80%E5%8C%96%E6%95%B8%E6%93%9A1.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/19.png">
 <p>現在看一下這些特徵的分佈。部分特徵的尾部確實很長，但沒有類似 <code>-9999</code> 風速值的明顯錯誤。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%AD%B8%E4%B8%80%E5%8C%96%E6%95%B8%E6%93%9A2.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/20.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/21.png">
 <h2>數據窗口化</h2>
 <p>本教程中的模型將基於來自數據連續樣本的窗口進行一組預測。</p>
 <p>輸入窗口的主要特徵包括：</p>
@@ -85,11 +91,11 @@
 <ol>
 <li>例如，要在給定 24 小時歷史記錄的情況下對未來 24 小時作出一次預測，可以定義如下窗口：</li>
 </ol>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/raw_window_24h.png?hl=zh-cn" alt="對未來 24 小時的一次預測。"></p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%231.png" alt="對未來 24 小時的一次預測。"></p>
 <ol>
 <li>給定 6 小時的歷史記錄，對未來 1 小時作出一次預測的模型將需要類似下面的窗口：</li>
 </ol>
-<p><img src="https://www.tensorflow.org/static/tutorials/structured_data/images/raw_window_1h.png?hl=zh-cn" alt="對未來 1 小時的一次預測。"></p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%232.png" alt="對未來 1 小時的一次預測。"></p>
 <p>本部分的剩餘內容會定義 <code>WindowGenerator</code> 類。此類可以：</p>
 <ol>
 <li>處理如上圖所示的索引和偏移量。</li>
@@ -100,29 +106,38 @@
 <h3>1.索引和偏移量</h3>
 <p>首先創建 <code>WindowGenerator</code> 類。<code>__init__</code> 方法包含輸入和標籤索引的所有必要邏輯。</p>
 <p>它還將訓練、評估和測試 DataFrame 作為輸出。這些稍後將被轉換為窗口的 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a>。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B4%A2%E5%BC%95%E5%92%8C%E5%81%8F%E7%A7%BB%E9%87%8F.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/22.png">
 <p>下面是創建本部分開頭圖表中所示的兩個窗口的代碼：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B4%A2%E5%BC%95%E5%92%8C%E5%81%8F%E7%A7%BB%E9%87%8F2.png">
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B4%A2%E5%BC%95%E5%92%8C%E5%81%8F%E7%A7%BB%E9%87%8F3.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/23.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/24.png">
 <h3>2.拆分</h3>
-<p><img src="https://tensorflow.google.cn/static/tutorials/structured_data/images/split_window.png?hl=zh-cn" alt="初始窗口都是連續的樣本，這會將其拆分成一個（輸入，標籤）對"></p>
+<p><img src="https://github.com/lkjhgfmnbvcx/123/blob/main/%233.png" alt="初始窗口都是連續的樣本，這會將其拆分成一個（輸入，標籤）對"></p>
 <p>此圖不顯示數據的 <code>features</code> 軸，但此 <code>split_window</code> 函數還會處理 <code>label_columns</code>，因此可以將其用於單輸出和多輸出樣本。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%8B%86%E5%88%861.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/25.png">
 <p>試試以下代碼：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E6%8B%86%E5%88%862.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/26.png">
 <p>通常，TensorFlow 中的數據會被打包到數組中，其中最外層索引是交叉樣本（“批次”維度）。中間索引是“時間”和“空間”（寬度、高度）維度。最內層索引是特徵。</p>
 <p>上面的代碼使用了三個 7 時間步驟窗口的批次，每個時間步驟有 19 個特徵。它將其拆分成一個 6 時間步驟的批次、19 個特徵輸入和一個 1 時間步驟 1 特徵的標籤。該標籤僅有一個特徵，因為 <code>WindowGenerator</code> 已使用 <code>label_columns=['T (degC)']</code> 進行了初始化。最初，本教程將構建預測單個輸出標籤的模型。</p>
 <h3>3.繪圖</h3>
 <p>下面是一個繪圖方法，可已對拆分窗口進行簡單可視化：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B9%AA%E5%9C%961.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/27.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/28.png">
 <p>此繪圖根據項目引用的時間來對齊輸入、標籤和（稍後的）預測：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B9%AA%E5%9C%962.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/29.png">
 <p>你可以繪製其他列，但是樣本窗口w2配置僅包含T(degC)列的標籤。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E7%B9%AA%E5%9C%963.jpg">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/30.png">
 <h4>4.創建tf.data.Dataset</h4>
 <p>最後，此 <code>make_dataset</code> 方法將獲取時間序列 DataFrame 並使用 <a href="https://tensorflow.google.cn/api_docs/python/tf/keras/utils/timeseries_dataset_from_array?hl=zh-cn"><code>tf.keras.utils.timeseries_dataset_from_array</code></a> 函數將其轉換為 <code>(input_window, label_window)</code> 對的 <a href="https://tensorflow.google.cn/api_docs/python/tf/data/Dataset?hl=zh-cn"><code>tf.data.Dataset</code></a>。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%89%B5%E5%BB%BA1.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/31.png">
 <p><code>WindowGenerator</code> 對象包含訓練、驗證和測試數
+
+
+
+
+
+
+
+  
 <img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E5%89%B5%E5%BB%BA4.png">
 <h2>單步模型</h2>
 <p>基於此類數據能夠構建的最簡單模型，能夠僅根據當前條件預測單個特徵的值，即未來的一個時間步驟（1 小時）。</p>
