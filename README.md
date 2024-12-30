@@ -347,32 +347,35 @@
 <p>此類模型的一個明顯優勢是可以將其設置為生成長度不同的輸出。</p>
 <p>您可以採用本教程前半部分中訓練的任意一個單步多輸出模型，並在自回歸反饋循環中運行，但是在這裡，您將重點關注經過顯式訓練的模型。</p>
 <p><img src="https://tensorflow.google.cn/static/tutorials/structured_data/images/multistep_autoregressive.png?hl=zh-cn"></p>
-
-
-
-
-
-
-
-
+<h4>RNN</h4>
+<p>本教學僅建立自迴歸 RNN 模型，但該模式可以應用於設計為輸出單一時間步驟的任何模型。</p>
+<p>模型將具有與先前的單步 LSTM 模型相同的基本形式：一個 <code>tf.keras.layers.LSTM</code> ，後接一個將 LSTM 層輸出轉換為模型預測的 <code>tf.keras.layers.Dense</code> 層。</p>
+<p><code>tf.keras.layers.LSTM</code> 是封裝在更高級<code>tf.keras.layers.RNN</code> 中的<code>tf.keras.layers.LSTMCell</code>，它為您管理狀態和序列結果（有關詳細信息，請參閱使用Keras 的循環神經網絡(RNN) 指引）。
+<P>在這種情況下，模型必須手動管理每個步驟的輸入，因此它直接將 <code>tf.keras.layers.LSTMCell</code> 用於較低層級的單一時間步驟介面。</P>
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/95.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/96.png">
 
 <p>該模型需要的第一個方法是 <code>warmup</code>，用來根據輸入初始化其內部狀態。訓練後，此狀態將捕獲輸入歷史記錄的相關部分。這等效於先前的單步 <code>LSTM</code> 模型：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8BRNN2.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/97.png">
 <p>此方法返回單個時間步驟預測以及 <code>LSTM</code> 的內部狀態：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8BRNN3.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/98.png">
 <p>有了 <code>RNN</code> 的狀態和初始預測，您現在可以繼續迭代模型，並在每一步將預測作為輸入反饋給模型。</p>
 <p>收集輸出預測的最簡單方式是使用 Python 列表，並在循環後使用 <code>tf.stack</code>。</p>
 <p>注：像這樣堆疊 Python 列表僅適用於 Eager-Execution，使用 <code>Model.compile(..., run_eagerly=True)</code> 進行訓練，或使用固定長度的輸出。對於動態輸出長度，您需要使用 <code>tf.TensorArray</code> 代替 Python 列表，並用 <code>tf.range</code> 代替 Python <code>range</code>。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8BRNN4.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/99.png">
 <p>在示例輸入上運行此模型：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8BRNN5.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/100.png">
 <p>現在，訓練模型：</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8BRNN6.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/101.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/102.png">
+
 <h3>性能</h3>
 <p>在這個問題上，作為模型複雜性的函數，返回值在明顯遞減。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD1.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/103.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/104.png">
+
 <p>本教程前半部分的多輸出模型的指標顯示了所有輸出特徵的平均性能。這些性能類似，但在輸出時間步驟上也進行了平均。</p>
-<img src="https://github.com/Bo-Zheng/RubyOnRailsTest/blob/main/img/%E8%87%AA%E5%9B%9E%E6%AD%B8%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD2.png">
+<img src="https://github.com/lkjhgfmnbvcx/123/blob/main/105.png">
 <p>從密集模型到卷積模型和循環模型，所獲得的增益只有百分之幾（如果有的話），而自回歸模型的表現顯然更差。因此，在<strong>這個</strong>問題上使用這些更複雜的方法可能並不值得，但如果不嘗試就無從知曉，而且這些模型可能會對<strong>您的</strong>問題有所幫助。</p>
 <h2>可能遇到的問題</h2>
 <h4>在性能的部份程式碼可能因新舊版本而發生錯誤，如下圖所示:</h4>
